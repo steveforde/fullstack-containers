@@ -1,15 +1,17 @@
-# Stage 1: Build static production files
 FROM node:24 AS build-stage
-
 WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+# Force npm ci to include devDependencies (like Vitest)
+RUN npm ci --include=dev
 
 COPY . .
 
-RUN npm ci
+# Run unit tests
+RUN npm test
 
-# Set the environment variable expected by the README
-ENV VITE_BACKEND_URL=http://localhost:3000
-
+# Build production assets
 RUN npm run build
 
 # Stage 2: Serve static files with Nginx
