@@ -9,7 +9,8 @@ const TodoView = () => {
 
   const refreshTodos = async () => {
     const { data } = await axios.get('/todos')
-    setTodos(data)
+    const todoList = Array.isArray(data) ? data : (data.todos || [])
+    setTodos(todoList)
   }
 
   useEffect(() => {
@@ -18,16 +19,17 @@ const TodoView = () => {
 
   const createTodo = async (todo) => {
     const { data } = await axios.post('/todos', todo)
-    setTodos([...todos, data])
+    const newTodo = data.todo || data
+    setTodos((prevTodos) => [...prevTodos, newTodo])
   }
 
   const deleteTodo = async (todo) => {
-    await axios.delete(`/todos/${todo._id}`)
+    await axios.delete(`/todos/${todo.id || todo._id}`)
     refreshTodos()
   }
 
   const completeTodo = async (todo) => {
-    await axios.put(`/todos/${todo._id}`, {
+    await axios.put(`/todos/${todo.id || todo._id}`, {
       text: todo.text,
       done: true
     })
@@ -36,7 +38,7 @@ const TodoView = () => {
 
   return (
     <>
-      <h1>Todos</h1>
+      <h1>My Todo App</h1>
       <Form createTodo={createTodo} />
       <List todos={todos} deleteTodo={deleteTodo} completeTodo={completeTodo} />
     </>

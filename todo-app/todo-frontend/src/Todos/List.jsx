@@ -9,9 +9,12 @@ const TodoList = ({ todos, deleteTodo, completeTodo }) => {
     completeTodo(todo)
   }
 
+  // Ensure todos is an array before attempting .map()
+  const todoArray = Array.isArray(todos) ? todos : []
+
   return (
     <>
-      {todos.map(todo => {
+      {todoArray.map(todo => {
         const doneInfo = (
           <>
             <span>This todo is done</span>
@@ -34,14 +37,14 @@ const TodoList = ({ todos, deleteTodo, completeTodo }) => {
         )
 
         return (
-          <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '70%', margin: 'auto' }}>
+          <div key={todo.id || todo.text} style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '70%', margin: 'auto' }}>
             <span>
               {todo.text} 
             </span>
             {todo.done ? doneInfo : notDoneInfo}
           </div>
         )
-      }).reduce((acc, cur) => [...acc, <hr />, cur], [])}
+      }).reduce((acc, cur, index) => acc.length === 0 ? [cur] : [...acc, <hr key={`hr-${index}`} />, cur], [])}
     </>
   )
 }
