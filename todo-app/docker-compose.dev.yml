@@ -46,5 +46,16 @@ services:
     volumes:
       - ./redis_data:/data
 
+  nginx:
+    image: nginx:1.29
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8080:80"
+    container_name: reverse-proxy
+    depends_on:
+      - app
+
 volumes:
   mongo_data:
+  redis_data:
