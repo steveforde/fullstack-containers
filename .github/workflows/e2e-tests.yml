@@ -12,19 +12,34 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          clean: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '24'
 
+      - name: Debug Test File Content
+        run: |
+          echo "--- CURRENT COMMIT ---"
+          git log -1 --oneline
+          echo "--- CHECKING PATH TO TEST FILE ---"
+          find . -name "todo-app.spec.js"
+          echo "--- LINES 15-25 OF TEST FILE ---"
+          if [ -f todo-tests/tests/todo-app.spec.js ]; then
+            sed -n '15,25p' todo-tests/tests/todo-app.spec.js
+          else
+            echo "File not found at standard path, searching..."
+          fi
+
       - name: Build todo-backend image
         working-directory: ./todo-app/todo-backend
-        run: docker build -t todo-backend -f Dockerfile .
+        run: docker build --no-cache -t todo-backend -f Dockerfile .
 
       - name: Build todo-frontend image
         working-directory: ./todo-app/todo-frontend
-        run: docker build -t todo-front -f Dockerfile .
+        run: docker build --no-cache -t todo-front -f Dockerfile .
 
       - name: Start todo-app with Docker Compose
         working-directory: ./todo-app
