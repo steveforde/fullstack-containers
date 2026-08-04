@@ -11,6 +11,9 @@ COPY . .
 # Run unit tests
 RUN npm test
 
+# IMPORTANT: Set the backend URL so the frontend talks to /api
+ENV VITE_BACKEND_URL=/api
+
 # Build production assets
 RUN npm run build
 
