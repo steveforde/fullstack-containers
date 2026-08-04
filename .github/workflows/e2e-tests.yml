@@ -39,13 +39,13 @@ jobs:
       - name: Check running containers
         run: docker ps
 
-      # CHANGED: Combined into one step that forces a fresh install
-      - name: Install dependencies and Playwright browsers
+      - name: Install dependencies
         working-directory: ./todo-tests
-        run: |
-          rm -rf node_modules package-lock.json
-          npm install
-          npx playwright install --with-deps chromium
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: ./todo-tests
+        run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
         working-directory: ./todo-tests
