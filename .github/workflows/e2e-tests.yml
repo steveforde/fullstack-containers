@@ -28,7 +28,7 @@ jobs:
 
       - name: Start todo-app with Docker Compose
         working-directory: ./todo-app
-        run: docker compose up -d
+        run: docker compose up -d --build --force-recreate
 
       - name: Wait for services to be ready
         run: |
